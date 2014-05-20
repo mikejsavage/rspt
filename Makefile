@@ -3,7 +3,7 @@ MAIN = src/main.rs
 
 TARGET = rspt
 
-RFLAGS = -W unnecessary-qualification -W unnecessary-typecast -W unused-result
+RFLAGS = -O -W unnecessary-qualification -W unnecessary-typecast -W unused-result
 RFLAGS += -L gl-rs/lib
 RFLAGS += -L glfw-rs/lib
 RFLAGS += -L rust-stb-image
@@ -13,8 +13,8 @@ RFLAGS += -C link-args="-lglfw"
 
 all: $(TARGET)
 
-opt: RFLAGS += -Z lto -O
-opt: all
+lto: RFLAGS += -Z lto
+lto: all
 
 debug: RFLAGS += -Z debug-info
 debug: all
