@@ -28,8 +28,8 @@ mod lights;
 mod materials;
 mod entity;
 
-static HEIGHT : uint = 480;
-static WIDTH : uint = 640;
+static HEIGHT : uint = 768;
+static WIDTH : uint = 1024;
 static ASPECT_RATIO : f64 = WIDTH as f64 / HEIGHT as f64;
 // static THREADS : uint = 253;
 static THREADS : uint = 4;
