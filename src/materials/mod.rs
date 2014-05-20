@@ -5,9 +5,11 @@ use maths::vec::Vec3;
 
 pub use materials::matte::Matte;
 pub use materials::mirror::Mirror;
+pub use materials::checkerboard::Checkerboard;
 
 pub mod matte;
 pub mod mirror;
+pub mod checkerboard;
 pub mod lambertian;
 pub mod specular;
 
