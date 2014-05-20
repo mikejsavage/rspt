@@ -118,7 +118,9 @@ fn sampler( indices : &[ uint ], eye : Vec3, centres : &[ Vec3 ], world : &World
 			}
 		}
 
-		println!( "{}", samples );
+		if samples % 10 == 0 {
+			println!( "{}", samples );
+		}
 	}
 }
 
