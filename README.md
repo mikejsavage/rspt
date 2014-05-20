@@ -4,4 +4,4 @@ Roughly 500 samples per pixel:
 
 ~12800 samples:
 
-[!13000 samples](13000.png)
+![13000 samples](13000.png)
