@@ -20,6 +20,6 @@ impl BxDF for Specular {
 	fn sample_f( &self, normal : Vec3, incident : Vec3 ) -> ( Vec3, RGB, f64 ) {
 		let reflected = -incident + normal * 2.0 * normal.dot( incident );
 
-		return ( reflected, self.reflectance, 1.0 );
+		return ( reflected, self.reflectance / normal.dot( incident ), 1.0 );
 	}
 }
