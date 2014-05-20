@@ -7,7 +7,7 @@ use maths::vec::Vec3;
 use shapes::{ Intersection, Plane, Sphere };
 use entity::Entity;
 use worlds::World;
-use materials::{ Matte, Mirror };
+use materials::{ Matte, Mirror, Checkerboard };
 
 pub struct SimpleWorld {
 	priv entities : ~[ Entity ],
@@ -25,15 +25,24 @@ impl SimpleWorld {
 		let spec_green = Mirror::new( RGB( 0.25, 0.75, 0.25 ) );
 		let spec_white = Mirror::new( RGB( 1.0, 1.0, 1.0 ) );
 
+		let check1 = Matte::new( RGB( 0.75, 0.75, 0.75 ) );
+		let check2 = Mirror::new( RGB( 0.6, 0.4, 0.2 ) );
+		let check = Checkerboard::new( ~check1, ~check2 );
+
 		return SimpleWorld::new( ~[
 			Entity::new( ~red, ~Plane { normal : Vec3::new( 0, 1, 0 ), d : -6.0 } ),
 			Entity::new( ~blue, ~Plane { normal : Vec3::new( 0, -1, 0 ), d : -6.0 } ),
-			Entity::new( ~white, ~Plane { normal : Vec3::new( 0, 0, 1 ), d : -3.0 } ),
+			Entity::new( ~check, ~Plane { normal : Vec3::new( 0, 0, 1 ), d : -3.0 } ),
+
+			// ceiling
 			// Entity::new( ~white, ~Plane { normal : Vec3::new( 0, 0, -1 ), d : -8.0 } ),
 			Entity::new_light( ~white, ~Plane { normal : Vec3::new( 0, 0, -1 ), d : -8.0 }, RGB( 2.0, 2.0, 2.0 ) ),
+
 			Entity::new( ~white, ~Plane { normal : Vec3::new( -1, 0, 0 ), d : -10.0 } ),
 			Entity::new( ~spec_green, ~Sphere { pos : Vec3::new( 8, 3, -1 ), r : 2.0 } ),
 			Entity::new( ~spec_white, ~Sphere { pos : Vec3::new( 6, -2, -1 ), r : 2.0 } ),
+
+			// a light
 			// Entity::new_light( ~white, ~Sphere { pos : Vec3::new( 7, 0, 3 ), r : 1.0 }, RGB( 12.0, 12.0, 12.0 ) ),
 		] );
 	}
