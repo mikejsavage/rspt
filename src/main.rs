@@ -149,14 +149,15 @@ fn main() {
 
 	let fov = Deg::new( 90 );
 	let focal_length = 0.1;
-	let focal_height = focal_length * ( fov / 2.0 ).tan();
+	let half_focal_height = focal_length * ( fov / 2.0 ).tan();
+	let half_focal_width = half_focal_height * ASPECT_RATIO;
 
-	let top_left = eye + forward * focal_length + up * focal_height + left * focal_height * ASPECT_RATIO;
-	let top_right = eye + forward * focal_length + up * focal_height - left * focal_height * ASPECT_RATIO;
-	let bottom_right = eye + forward * focal_length - up * focal_height - left * focal_height * ASPECT_RATIO;
+	let top_left = eye + forward * focal_length + up * half_focal_height + left * half_focal_width;
+	let top_right = eye + forward * focal_length + up * half_focal_height - left * half_focal_width;
+	let bottom_right = eye + forward * focal_length - up * half_focal_height - left * half_focal_width;
 
-	let up_pixel = up * focal_height / HEIGHT as f64;
-	let left_pixel = left * focal_height * ASPECT_RATIO / WIDTH as f64;
+	let up_pixel = up * 2.0 * half_focal_height / HEIGHT as f64;
+	let left_pixel = left * 2.0 * half_focal_height * ASPECT_RATIO / WIDTH as f64;
 
 	let hashes = std::slice::from_fn( THREADS, pixelhash );
 
