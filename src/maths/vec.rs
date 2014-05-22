@@ -19,15 +19,6 @@ impl Vec3 {
 		};
 	}
 
-	// #[ inline ]
-	// pub fn ma( &self, other : &Vec3, t : f64 ) -> Vec3 {
-	// 	return Vec3 {
-	// 		x : self.x + other.x * t,
-	// 		y : self.y + other.y * t,
-	// 		z : self.z + other.z * t,
-	// 	};
-	// }
-
 	#[ inline ]
 	pub fn length( &self ) -> f64 {
 		return sqrt( self.sqlength() );
@@ -58,13 +49,6 @@ impl Vec3 {
 	#[ inline ]
 	pub fn dot( &self, other : Vec3 ) -> f64 {
 		return self.x * other.x + self.y * other.y + self.z * other.z;
-	}
-
-	#[ inline ]
-	pub fn hldp( &self, other : Vec3 ) -> f64 {
-		let d = self.dot( other ) * 0.5 + 0.5;
-
-		return d * d;
 	}
 
 	#[ inline ]
