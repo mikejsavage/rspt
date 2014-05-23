@@ -30,9 +30,20 @@ pub fn intersection( pos : Vec3, r : f64, start : Vec3, dir : Vec3 ) -> Option< 
 		return None;
 	}
 
-	let t = ( b - sqrt( disc ) ).max( 0.0 );
+	let sqrt_d = sqrt( disc );
 
-	return Some( t );
+	let tl = b - d;
+	let tf = b + d;
+
+	if tl < 0 {
+		if tf < 0 {
+			return None;
+		}
+
+		return Some( tf );
+	}
+
+	return Some( tl );
 }
 
 // TODO
