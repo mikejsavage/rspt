@@ -1,4 +1,4 @@
-![13000 samples](13000.png)
+![25000 samples](25000.png)
 
 You need to build `gl-rs` with OpenGL 2.1 bindings. Full build
 instructions look like:
