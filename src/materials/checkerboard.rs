@@ -1,8 +1,6 @@
 #![ allow( dead_code ) ]
 
-use maths::color::RGB;
 use materials::{ Material, BxDF };
-use materials::lambertian::Lambertian;
 
 pub struct Checkerboard {
 	mat1 : ~Material : Send + Share,
