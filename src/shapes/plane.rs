@@ -17,7 +17,7 @@ pub fn intersection( normal : Vec3, d : f64, start : Vec3, dir : Vec3 ) -> Optio
 	return Some( t );
 }
 
-pub fn uv( normal : Vec3, d : f64, point : Vec3 ) -> ( f64, f64 ) {
+pub fn uv( normal : Vec3, _ : f64, point : Vec3 ) -> ( f64, f64 ) {
 	let rot = Rotation::between( normal, Vec3::k() );
 	let point_ = rot.apply( point );
 
