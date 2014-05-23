@@ -30,20 +30,23 @@ impl SimpleWorld {
 		let check = Checkerboard::new( ~check1, ~check2 );
 
 		return SimpleWorld::new( ~[
+			// right
 			Entity::new( ~red, ~Plane { normal : Vec3::new( 0, 1, 0 ), d : -6.0 } ),
+			// left
 			Entity::new( ~blue, ~Plane { normal : Vec3::new( 0, -1, 0 ), d : -6.0 } ),
+			// floor
 			Entity::new( ~check, ~Plane { normal : Vec3::new( 0, 0, 1 ), d : -3.0 } ),
-
 			// ceiling
-			// Entity::new( ~white, ~Plane { normal : Vec3::new( 0, 0, -1 ), d : -8.0 } ),
-			Entity::new_light( ~white, ~Plane { normal : Vec3::new( 0, 0, -1 ), d : -8.0 }, RGB( 2.0, 2.0, 2.0 ) ),
-
+			Entity::new( ~white, ~Plane { normal : Vec3::new( 0, 0, -1 ), d : -8.0 } ),
+			// back
 			Entity::new( ~white, ~Plane { normal : Vec3::new( -1, 0, 0 ), d : -10.0 } ),
+
+			// spheres
 			Entity::new( ~spec_green, ~Sphere { pos : Vec3::new( 8, 3, -1 ), r : 2.0 } ),
 			Entity::new( ~spec_white, ~Sphere { pos : Vec3::new( 6, -2, -1 ), r : 2.0 } ),
 
-			// a light
-			// Entity::new_light( ~white, ~Sphere { pos : Vec3::new( 7, 0, 3 ), r : 1.0 }, RGB( 12.0, 12.0, 12.0 ) ),
+			// light
+			Entity::new_light( ~white, ~Sphere { pos : Vec3::new( 7, 0, 3 ), r : 1.0 }, RGB( 1.0, 1.0, 1.0 ) ),
 		] );
 	}
 }
