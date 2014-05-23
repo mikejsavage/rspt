@@ -96,7 +96,7 @@ fn irradiance( world : &World, start : Vec3, dir : Vec3, depth : uint ) -> RGB {
 			return ( &light as &Light ).emittance( normal, -dir );
 		} );
 
-		return emittance + irradiance( world, is.pos, outgoing, depth + 1 ).scale( reflectance ) * normal.dot( outgoing );
+		return emittance + irradiance( world, is.pos, outgoing, depth + 1 ).scale( reflectance ) * normal.dot( outgoing ) / pdf;
 	} );
 }
 
