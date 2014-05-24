@@ -31,9 +31,9 @@ impl RGB {
 	}
 
 	#[ inline ]
-	pub fn scale( &self, RGB( r_, g_, b_ ) : RGB ) -> RGB {
+	pub fn scale( &self, s : f64 ) -> RGB {
 		match self {
-			&RGB( r, g, b ) => RGB( r * r_, g * g_, b * b_ )
+			&RGB( r, g, b ) => RGB( r * s, g * s, b * s )
 		}
 	}
 
@@ -52,11 +52,11 @@ impl Add< RGB, RGB > for RGB {
 	}
 }
 
-impl Mul< f64, RGB > for RGB {
+impl Mul< RGB, RGB > for RGB {
 	#[ inline ]
-	fn mul( &self, s : &f64 ) -> RGB {
+	fn mul( &self, &RGB( r_, g_, b_ ) : &RGB ) -> RGB {
 		match self {
-			&RGB( r, g, b ) => RGB( r * *s, g * *s, b * *s )
+			&RGB( r, g, b ) => RGB( r * r_, g * g_, b * b_ )
 		}
 	}
 }
@@ -66,8 +66,6 @@ impl Div< f64, RGB > for RGB {
 	fn div( &self, d : &f64 ) -> RGB {
 		let s = 1.0 / *d;
 
-		match self {
-			&RGB( r, g, b ) => RGB( r * s, g * s, b * s )
-		}
+		return self.scale( s );
 	}
 }

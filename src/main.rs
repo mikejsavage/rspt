@@ -7,6 +7,7 @@ extern crate rand;
 extern crate gl;
 extern crate glfw;
 
+use std::num::abs;
 use std::io::timer::sleep;
 use sync::Arc;
 
@@ -77,7 +78,6 @@ fn pixels_to_centres(
 	} ).collect();
 }
 
-// TODO: handle hitting the back of a shape
 fn irradiance( world : &World, start : Vec3, dir : Vec3, depth : uint ) -> RGB {
 	if depth > 5 {
 		return RGB::black();
@@ -96,7 +96,9 @@ fn irradiance( world : &World, start : Vec3, dir : Vec3, depth : uint ) -> RGB {
 			return ( &light as &Light ).emittance( normal, -dir );
 		} );
 
-		return emittance + irradiance( world, is.pos, outgoing, depth + 1 ).scale( reflectance ) * normal.dot( outgoing ) / pdf;
+		let throughput = abs( normal.dot( outgoing ) ) / pdf;
+
+		return emittance + ( reflectance * irradiance( world, is.pos, outgoing, depth + 1 ) ).scale( throughput );
 	} );
 }
 

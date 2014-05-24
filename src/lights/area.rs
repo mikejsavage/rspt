@@ -23,7 +23,7 @@ impl AreaLight {
 
 impl Light for AreaLight {
 	fn power( &self ) -> RGB {
-		return self.color * self.area * Float::pi();
+		return self.color.scale( self.area * Float::pi() );
 	}
 
 	fn emittance( &self, normal : Vec3, dir : Vec3 ) -> RGB {
