@@ -42,11 +42,11 @@ impl SimpleWorld {
 			Entity::new( ~white, ~Plane { normal : Vec3::new( -1, 0, 0 ), d : -10.0 } ),
 
 			// spheres
-			Entity::new( ~spec_green, ~Sphere { pos : Vec3::new( 8, 3, -1 ), r : 2.0 } ),
-			Entity::new( ~spec_white, ~Sphere { pos : Vec3::new( 6, -2, -1 ), r : 2.0 } ),
+			Entity::new( ~spec_green, ~Sphere { centre : Vec3::new( 8, 3, -1 ), radius : 2.0 } ),
+			Entity::new( ~spec_white, ~Sphere { centre : Vec3::new( 6, -2, -1 ), radius : 2.0 } ),
 
 			// light
-			Entity::new_light( ~white, ~Sphere { pos : Vec3::new( 7, 0, 3 ), r : 1.0 }, RGB( 1.0, 1.0, 1.0 ) ),
+			Entity::new_light( ~white, ~Sphere { centre : Vec3::new( 7, 0, 3 ), radius : 1.0 }, RGB( 1.0, 1.0, 1.0 ) ),
 		] );
 	}
 }
@@ -71,7 +71,7 @@ impl World for SimpleWorld {
 
 			match ot {
 				Some( t ) => {
-					if t < minT {
+					if t < minT && t > 0.001 {
 						minT = t;
 						minE = Some( entity );
 					}

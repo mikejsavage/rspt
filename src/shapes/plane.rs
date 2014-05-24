@@ -2,28 +2,40 @@ use std::num::Float;
 
 use maths::vec::Vec3;
 use maths::rotation::Rotation;
+use shapes::Shape;
 
-pub fn intersects( normal : Vec3, d : f64, start : Vec3, end : Vec3 ) -> bool {
-	return ( start.dot( normal ) - d ) * ( end.dot( normal ) - d ) <= 0.0;
+pub struct Plane {
+	normal : Vec3,
+	d : f64,
 }
 
-pub fn intersection( normal : Vec3, d : f64, start : Vec3, dir : Vec3 ) -> Option< f64 > {
-	let t = ( d - start.dot( normal ) ) / ( dir.dot( normal ) );
+impl Shape for Plane {
+	// fn intersects( normal : Vec3, d : f64, start : Vec3, end : Vec3 ) -> bool {
+	// 	return ( start.dot( normal ) - d ) * ( end.dot( normal ) - d ) <= 0.0;
+	// }
 
-	if t < 0.0 {
-		return None;
+	fn intersection( &self, start : Vec3, dir : Vec3 ) -> Option< f64 > {
+		let t = ( self.d - start.dot( self.normal ) ) / ( dir.dot( self.normal ) );
+
+		if t < 0.0 {
+			return None;
+		}
+
+		return Some( t );
 	}
 
-	return Some( t );
-}
+	fn normal( &self, _ : Vec3 ) -> Vec3 {
+		return self.normal;
+	}
 
-pub fn uv( normal : Vec3, _ : f64, point : Vec3 ) -> ( f64, f64 ) {
-	let rot = Rotation::between( normal, Vec3::k() );
-	let point_ = rot.apply( point );
+	fn uv( &self, point : Vec3 ) -> ( f64, f64 ) {
+		let rot = Rotation::between( self.normal, Vec3::k() );
+		let point_ = rot.apply( point );
 
-	return ( point_.x, point_.y );
-}
+		return ( point_.x, point_.y );
+	}
 
-pub fn surface_area() -> f64 {
-	return Float::infinity();
+	fn surface_area( &self ) -> f64 {
+		return Float::infinity();
+	}
 }
