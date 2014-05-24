@@ -24,13 +24,5 @@ pub trait Texture {
 // used for BRDF/BTDF
 #[ allow( unused_variable ) ]
 pub trait BxDF {
-	// fn f( &self, normal : Vec3, incident : Vec3, out : Vec3 ) -> RGB {
-	// 	return RGB::black();
-	// }
-	//
-	// fn sample_f( &self, normal : Vec3, indicent : Vec3 ) -> Option< ( Vec3, RGB ) > {
-	// 	return None;
-	// }
-
 	fn sample_f( &self, normal : Vec3, indicent : Vec3 ) -> ( Vec3, RGB, f64 );
 }
