@@ -4,9 +4,9 @@ use std::num::Float;
 
 use maths::color::RGB;
 use maths::vec::Vec3;
-use shapes::{ Intersection, Plane, Sphere };
+use shapes::{ Plane, Sphere };
 use entity::Entity;
-use worlds::World;
+use worlds::{ World, Intersection };
 use materials::{ Matte, Mirror, Checkerboard };
 
 pub struct SimpleWorld {

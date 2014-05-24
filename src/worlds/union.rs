@@ -1,6 +1,5 @@
 use maths::vec::Vec3;
-use shapes::Intersection;
-use worlds::World;
+use worlds::{ World, Intersection };
 
 #[ allow( dead_code ) ]
 pub struct UnionWorld {
