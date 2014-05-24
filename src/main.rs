@@ -34,19 +34,7 @@ static ASPECT_RATIO : f64 = WIDTH as f64 / HEIGHT as f64;
 // static THREADS : uint = 253;
 static THREADS : uint = 4;
 
-static mut pixels : [ ( u32, RGB ), ..WIDTH * HEIGHT ] = [ ( 0, RGB( 0.0, 0.0, 0.0 ) ), ..WIDTH * HEIGHT ];
-
-fn pixelhash( thread : uint ) -> ~[ uint ] {
-	let mut ps = ~[ ];
-	let mut p = thread;
-
-	while p < WIDTH * HEIGHT {
-		ps.push( p );
-		p += THREADS;
-	}
-
-	return ps;
-}
+static mut image : [ ( u32, RGB ), ..WIDTH * HEIGHT ] = [ ( 0, RGB( 0.0, 0.0, 0.0 ) ), ..WIDTH * HEIGHT ];
 
 fn coord() -> ( Vec3, Vec3, Vec3 ) {
 	let uppy = Vec3::new( 0, 0, 1 );
@@ -58,7 +46,19 @@ fn coord() -> ( Vec3, Vec3, Vec3 ) {
 	return ( forward, up, left );
 }
 
-fn pixelIndicesToPoints(
+fn pixels_for_thread( thread : uint ) -> ~[ uint ] {
+	let mut ps = ~[ ];
+	let mut p = thread;
+
+	while p < WIDTH * HEIGHT {
+		ps.push( p );
+		p += THREADS;
+	}
+
+	return ps;
+}
+
+fn pixels_to_centres(
     pixels : &~[ uint ],
     tl : Vec3, // top left of view frustrum
     tr : Vec3, // top right
@@ -100,21 +100,21 @@ fn irradiance( world : &World, start : Vec3, dir : Vec3, depth : uint ) -> RGB {
 	} );
 }
 
-fn sampler( indices : &[ uint ], eye : Vec3, centres : &[ Vec3 ], world : &World, up : Vec3, left : Vec3 ) {
+fn sampler( eye : Vec3, pixels : &[ uint ], centres : &[ Vec3 ], world : &World, up_pixel : Vec3, left_pixel : Vec3 ) {
 	let mut samples = 0;
 
 	loop {
 		samples += 1;
 
-		for i in range( 0, indices.len() ) {
-			let dx = left * tent::sample();
-			let dy = up * tent::sample();
+		for i in range( 0, pixels.len() ) {
+			let dx = left_pixel * tent::sample();
+			let dy = up_pixel * tent::sample();
 			let ray = ( centres[ i ] + dx + dy - eye ).normalised();
 			let color = irradiance( world, eye, ray, 0 );
 
 			unsafe {
-				let p = indices[ i ];
-				pixels[ p ] = ( samples, pixels[ p ].val1() + color );
+				let p = pixels[ i ];
+				image[ p ] = ( samples, image[ p ].val1() + color );
 			}
 		}
 
@@ -159,26 +159,26 @@ fn main() {
 	let up_pixel = up * 2.0 * half_focal_height / HEIGHT as f64;
 	let left_pixel = left * 2.0 * half_focal_width / WIDTH as f64;
 
-	let hashes = std::slice::from_fn( THREADS, pixelhash );
+	let pixels = std::slice::from_fn( THREADS, pixels_for_thread );
 
-	let centres : ~[ ~[ Vec3 ] ] = hashes.iter().map( | ps | {
-		return pixelIndicesToPoints( ps, top_left, top_right, bottom_right );
+	let centres : ~[ ~[ Vec3 ] ] = pixels.iter().map( | ps | {
+		return pixels_to_centres( ps, top_left, top_right, bottom_right );
 	} ).collect();
 
-	let hashes_arc = Arc::new( hashes );
+	let pixels_arc = Arc::new( pixels );
 	let centres_arc = Arc::new( centres );
 
 	for n in range( 0, THREADS ) {
-		let hashes_arc = hashes_arc.clone();
+		let pixels_arc = pixels_arc.clone();
 		let centres_arc = centres_arc.clone();
 		let world_arc = world_arc.clone();
 
 		spawn( proc() {
-			let hashes = hashes_arc.deref();
+			let pixels = pixels_arc.deref();
 			let centres = centres_arc.deref();
 			let world = world_arc.deref();
 
-			sampler( hashes[ n ], eye, centres[ n ], world, up_pixel, left_pixel );
+			sampler( eye, pixels[ n ], centres[ n ], world, up_pixel, left_pixel );
 		} );
 	}
 
@@ -191,11 +191,11 @@ fn main() {
 		gl::Begin( gl::POINTS );
 
 		unsafe {
-			for i in range( 0, pixels.len() ) {
+			for i in range( 0, image.len() ) {
 				let x = i % WIDTH;
 				let y = i / WIDTH;
 
-				let ( samples, color ) = pixels[ i ];
+				let ( samples, color ) = image[ i ];
 
 				let ( r, g, b ) = ( color / samples as f64 ).gamma( 2.2 );
 
