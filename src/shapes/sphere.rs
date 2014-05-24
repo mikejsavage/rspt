@@ -32,11 +32,11 @@ pub fn intersection( pos : Vec3, r : f64, start : Vec3, dir : Vec3 ) -> Option< 
 
 	let sqrt_d = sqrt( disc );
 
-	let tl = b - d;
-	let tf = b + d;
+	let tl = b - sqrt_d;
+	let tf = b + sqrt_d;
 
-	if tl < 0 {
-		if tf < 0 {
+	if tl < 0.0 {
+		if tf < 0.0 {
 			return None;
 		}
 
