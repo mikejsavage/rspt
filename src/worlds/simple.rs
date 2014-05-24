@@ -51,6 +51,8 @@ impl SimpleWorld {
 	}
 }
 
+static EPSILON : f64 = 0.001;
+
 impl World for SimpleWorld {
 	// fn intersects( &self, start : Vec3, dir : Vec3 ) -> bool {
 	// 	for shape in self.entities.iter() {
@@ -71,7 +73,7 @@ impl World for SimpleWorld {
 
 			match ot {
 				Some( t ) => {
-					if t < minT && t > 0.001 {
+					if t < minT && t > EPSILON {
 						minT = t;
 						minE = Some( entity );
 					}
