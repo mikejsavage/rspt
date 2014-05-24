@@ -157,7 +157,7 @@ fn main() {
 	let bottom_right = eye + forward * focal_length - up * half_focal_height - left * half_focal_width;
 
 	let up_pixel = up * 2.0 * half_focal_height / HEIGHT as f64;
-	let left_pixel = left * 2.0 * half_focal_height * ASPECT_RATIO / WIDTH as f64;
+	let left_pixel = left * 2.0 * half_focal_width / WIDTH as f64;
 
 	let hashes = std::slice::from_fn( THREADS, pixelhash );
 
