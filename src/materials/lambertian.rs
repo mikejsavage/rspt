@@ -28,6 +28,5 @@ impl BxDF for Lambertian {
 		let pdf : f64 = sample.z * Float::frac_1_pi();
 
 		return ( out, self.reflectance, pdf );
-
 	}
 }
