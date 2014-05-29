@@ -1,7 +1,5 @@
 #![ allow( dead_code ) ]
 
-use std::num::Float;
-
 use maths::color::RGB;
 use maths::vec::Vec3;
 use maths::rotation::Rotation;
@@ -25,7 +23,7 @@ impl BxDF for Lambertian {
 		let rot = Rotation::between( Vec3::k(), normal );
 		let sample = hemisphere::sample_cos();
 		let out = rot.apply( sample );
-		let pdf = sample.z * Float::frac_1_pi();
+		let pdf = hemisphere::pdf_cos( sample );
 
 		return ( out, self.reflectance, pdf );
 	}

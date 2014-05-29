@@ -20,6 +20,10 @@ pub fn sample() -> Vec3 {
 	};
 }
 
+pub fn pdf() -> f64 {
+	return 1.0 / Float::two_pi();
+}
+
 // sample the unit hemisphere weighted by cos( theta )
 pub fn sample_cos() -> Vec3 {
 	let p = disk::sample();
@@ -29,4 +33,8 @@ pub fn sample_cos() -> Vec3 {
 		y : p.y,
 		z : sqrt( 1.0 - ( p.x * p.x + p.y * p.y ) ),
 	};
+}
+
+pub fn pdf_cos( v : Vec3 ) -> f64 {
+	return v.z / Float::frac_1_pi();
 }
