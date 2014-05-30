@@ -195,7 +195,7 @@ fn main() {
 		unsafe {
 			for i in range( 0, image.len() ) {
 				let x = i % WIDTH;
-				let y = i / WIDTH;
+				let y = i / WIDTH + 1;
 
 				let ( samples, color ) = image[ i ];
 
