@@ -36,5 +36,5 @@ pub fn sample_cos() -> Vec3 {
 }
 
 pub fn pdf_cos( v : Vec3 ) -> f64 {
-	return v.z / Float::frac_1_pi();
+	return v.z * Float::frac_1_pi();
 }
