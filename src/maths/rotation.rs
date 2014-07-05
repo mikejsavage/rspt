@@ -18,11 +18,9 @@ impl Rotation {
 			+ self.elems[ 0 ][ 2 ] * ( self.elems[ 1 ][ 0 ] * self.elems[ 2 ][ 1 ] - self.elems[ 2 ][ 0 ] * self.elems[ 1 ][ 1 ] );
 	}
 
-	// since this should only be used to hold rotations
-	// i am going to assume it always has an inverse
 	pub fn inverse( &self ) -> Rotation {
 		let d = self.det();
-		assert!( d != 0.0 );
+		assert!( d != 0.0 ); // this is reasonable
 		let e = &self.elems;
 
 		return Rotation {
@@ -54,7 +52,6 @@ impl Rotation {
 		};
 	}
 
-	#[ inline ]
 	pub fn zero() -> Rotation {
 		return Rotation {
 			elems: [
