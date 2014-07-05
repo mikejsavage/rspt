@@ -1,17 +1,18 @@
-use std::num::{ Float, FloatMath };
+use std::num::{ Float, FloatMath, Zero, zero };
 use std::fmt;
 
-#[ deriving( Clone ) ]
+#[ deriving( Clone, PartialEq, PartialOrd ) ]
 pub struct Deg {
 	pub d : f64,
 }
 
-#[ deriving( Clone ) ]
+#[ deriving( Clone, PartialEq, PartialOrd ) ]
 pub struct Rad {
 	pub r : f64,
 }
 
-pub trait Angle : Clone
+pub trait Angle : Clone + PartialEq + PartialOrd
+	+ Zero
 	+ Add< Self, Self > + Sub< Self, Self > + Neg< Self >
 	+ Mul< f64, Self > + Div< f64, Self >
 	+ fmt::Show
@@ -23,15 +24,17 @@ pub trait Angle : Clone
 
 	#[ inline ]
 	fn normalised( &self ) -> Self {
-		if self.rad().r > Float::two_pi() {
-			return *self - Angle::turn();
+		let mut result = self.clone();
+
+		while result > Angle::turn() {
+			result = result - Angle::turn();
 		}
 
-		if self.rad().r < 0.0 {
-			return *self + Angle::turn();
+		while result < zero() {
+			result = result + Angle::turn();
 		}
 
-		return self.clone();
+		return result;
 	}
 
 	fn sin( &self ) -> f64;
@@ -106,6 +109,18 @@ impl Angle for Deg {
 	#[ inline ]
 	fn sin_cos( &self ) -> ( f64, f64 ) {
 		return ( self.rad().r.sin(), self.rad().r.cos() );
+	}
+}
+
+impl Zero for Deg {
+	#[ inline ]
+	fn zero() -> Deg {
+		return Deg { d : 0.0 };
+	}
+
+	#[ inline ]
+	fn is_zero( &self ) -> bool {
+		return *self == zero();
 	}
 }
 
@@ -213,6 +228,18 @@ impl Angle for Rad {
 	#[ inline ]
 	fn sin_cos( &self ) -> ( f64, f64 ) {
 		return ( self.r.sin(), self.r.cos() );
+	}
+}
+
+impl Zero for Rad {
+	#[ inline ]
+	fn zero() -> Rad {
+		return Rad { r : 0.0 };
+	}
+
+	#[ inline ]
+	fn is_zero( &self ) -> bool {
+		return *self == zero();
 	}
 }
 
