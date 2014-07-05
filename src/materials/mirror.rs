@@ -5,7 +5,7 @@ use materials::{ Material, BxDF };
 use materials::specular::Specular;
 
 pub struct Mirror {
-	color : RGB,
+	pub color : RGB,
 }
 
 impl Mirror {
@@ -17,7 +17,7 @@ impl Mirror {
 }
 
 impl Material for Mirror {
-	fn get_bxdf( &self, _ : f64, _ : f64 ) -> ~BxDF {
-		return ~Specular::new( self.color ) as ~BxDF;
+	fn get_bxdf( &self, _ : f64, _ : f64 ) -> Box< BxDF > {
+		return box Specular::new( self.color ) as Box< BxDF >;
 	}
 }

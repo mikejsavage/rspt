@@ -6,13 +6,13 @@ use lights::area::AreaLight;
 use materials::Material;
 
 pub struct Entity {
-	material : ~Material : Share + Send,
-	shape : ~Shape : Send + Share,
-	light : Option< AreaLight >,
+	pub material : Box< Material + Share + Send >,
+	pub shape : Box< Shape + Send + Share >,
+	pub light : Option< AreaLight >,
 }
 
 impl Entity {
-	pub fn new( material : ~Material : Share + Send, shape : ~Shape : Share + Send ) -> Entity {
+	pub fn new( material : Box< Material + Share + Send >, shape : Box< Shape + Share + Send > ) -> Entity {
 		return Entity {
 			material : material,
 			shape : shape,
@@ -20,7 +20,7 @@ impl Entity {
 		};
 	}
 
-	pub fn new_light( material : ~Material : Share + Send, shape : ~Shape : Share + Send, emission : RGB ) -> Entity {
+	pub fn new_light( material : Box< Material + Share + Send >, shape : Box< Shape + Share + Send >, emission : RGB ) -> Entity {
 		let light = AreaLight::new( emission, shape );
 
 		return Entity {

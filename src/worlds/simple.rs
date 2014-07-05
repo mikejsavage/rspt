@@ -10,11 +10,11 @@ use worlds::{ World, Intersection };
 use materials::{ Matte, Mirror, Checkerboard };
 
 pub struct SimpleWorld {
-	priv entities : ~[ Entity ],
+	entities : Vec< Entity >,
 }
 
 impl SimpleWorld {
-	pub fn new( entities : ~[ Entity ] ) -> SimpleWorld {
+	pub fn new( entities : Vec< Entity > ) -> SimpleWorld {
 		return SimpleWorld { entities : entities };
 	}
 
@@ -27,27 +27,27 @@ impl SimpleWorld {
 
 		let check1 = Matte::new( RGB( 0.75, 0.75, 0.75 ) );
 		let check2 = Mirror::new( RGB( 0.6, 0.4, 0.2 ) );
-		let check = Checkerboard::new( ~check1, ~check2 );
+		let check = Checkerboard::new( box check1, box check2 );
 
-		return SimpleWorld::new( ~[
+		return SimpleWorld::new( vec!(
 			// right
-			Entity::new( ~red, ~Plane { normal : Vec3::new( 0, 1, 0 ), d : -6.0 } ),
+			Entity::new( box red, box Plane { normal : Vec3::new( 0.0, 1.0, 0.0 ), d : -6.0 } ),
 			// left
-			Entity::new( ~blue, ~Plane { normal : Vec3::new( 0, -1, 0 ), d : -6.0 } ),
+			Entity::new( box blue, box Plane { normal : Vec3::new( 0.0, -1.0, 0.0 ), d : -6.0 } ),
 			// floor
-			Entity::new( ~check, ~Plane { normal : Vec3::new( 0, 0, 1 ), d : -3.0 } ),
+			Entity::new( box check, box Plane { normal : Vec3::new( 0.0, 0.0, 1.0 ), d : -3.0 } ),
 			// ceiling
-			Entity::new( ~white, ~Plane { normal : Vec3::new( 0, 0, -1 ), d : -8.0 } ),
+			Entity::new( box white, box Plane { normal : Vec3::new( 0.0, 0.0, -1.0 ), d : -8.0 } ),
 			// back
-			Entity::new( ~white, ~Plane { normal : Vec3::new( -1, 0, 0 ), d : -10.0 } ),
+			Entity::new( box white, box Plane { normal : Vec3::new( -1.0, 0.0, 0.0 ), d : -10.0 } ),
 
 			// spheres
-			Entity::new( ~spec_green, ~Sphere { centre : Vec3::new( 8, 3, -1 ), radius : 2.0 } ),
-			Entity::new( ~spec_white, ~Sphere { centre : Vec3::new( 6, -2, -1 ), radius : 2.0 } ),
+			Entity::new( box spec_green, box Sphere { centre : Vec3::new( 8.0, 3.0, -1.0 ), radius : 2.0 } ),
+			Entity::new( box spec_white, box Sphere { centre : Vec3::new( 6.0, -2.0, -1.0 ), radius : 2.0 } ),
 
 			// light
-			Entity::new_light( ~white, ~Sphere { centre : Vec3::new( 7, 0, 3 ), radius : 1.0 }, RGB( 1.0, 1.0, 1.0 ) ),
-		] );
+			Entity::new_light( box white, box Sphere { centre : Vec3::new( 7.0, 0.0, 3.0 ), radius : 1.0 }, RGB( 1.0, 1.0, 1.0 ) ),
+		) );
 	}
 }
 

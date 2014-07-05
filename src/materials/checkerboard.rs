@@ -3,12 +3,12 @@
 use materials::{ Material, BxDF };
 
 pub struct Checkerboard {
-	mat1 : ~Material : Send + Share,
-	mat2 : ~Material : Send + Share,
+	mat1 : Box< Material + Send + Share >,
+	mat2 : Box< Material + Send + Share >,
 }
 
 impl Checkerboard {
-	pub fn new( mat1 : ~Material : Send + Share, mat2 : ~Material : Send + Share ) -> Checkerboard {
+	pub fn new( mat1 : Box< Material + Send + Share >, mat2 : Box< Material + Send + Share > ) -> Checkerboard {
 		return Checkerboard {
 			mat1 : mat1,
 			mat2 : mat2,
@@ -17,7 +17,7 @@ impl Checkerboard {
 }
 
 impl Material for Checkerboard {
-	fn get_bxdf( &self, u : f64, v : f64 ) -> ~BxDF {
+	fn get_bxdf( &self, u : f64, v : f64 ) -> Box< BxDF > {
 		let u10 = ( u * 10.0 ).floor() as i64;
 		let v10 = ( v * 10.0 ).floor() as i64;
 		let uc = u * 10.0 - u10 as f64;

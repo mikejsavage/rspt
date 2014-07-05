@@ -1,27 +1,27 @@
-use std::num::{ sqrt, rsqrt };
+use std::num::Float;
 use std::fmt;
 
-#[ deriving( Clone, Eq ) ]
+#[ deriving( Clone, PartialEq ) ]
 pub struct Vec3 {
-	x : f64,
-	y : f64,
-	z : f64,
+	pub x : f64,
+	pub y : f64,
+	pub z : f64,
 }
 
 #[ allow( dead_code ) ]
 impl Vec3 {
 	#[ inline ]
-	pub fn new< S : ToPrimitive, T : ToPrimitive, U : ToPrimitive >( x : S, y : T, z : U ) -> Vec3 {
+	pub fn new( x : f64, y : f64, z : f64 ) -> Vec3 {
 		return Vec3 {
-			x : x.to_f64().unwrap(),
-			y : y.to_f64().unwrap(),
-			z : z.to_f64().unwrap(),
+			x : x,
+			y : y,
+			z : z,
 		};
 	}
 
 	#[ inline ]
 	pub fn length( &self ) -> f64 {
-		return sqrt( self.sqlength() );
+		return self.sqlength().sqrt();
 	}
 
 	#[ inline ]
@@ -36,7 +36,7 @@ impl Vec3 {
 
 	#[ inline ]
 	pub fn fastnormalised( &self ) -> Vec3 {
-		return self * rsqrt( self.sqlength() );
+		return self * self.sqlength().rsqrt();
 	}
 
 	#[ inline ]
@@ -154,6 +154,6 @@ impl Neg< Vec3 > for Vec3 {
 
 impl fmt::Show for Vec3 {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
-		return write!( f.buf, "[ {}, {}, {} ]", self.x, self.y, self.z );
+		return write!( f, "[ {}, {}, {} ]", self.x, self.y, self.z );
 	}
 }

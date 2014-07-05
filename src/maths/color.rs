@@ -1,7 +1,7 @@
-use std::f64::pow;
+use std::num::Float;
 
-#[ deriving( Clone, Eq, Show ) ]
-pub struct RGB( f64, f64, f64 );
+#[ deriving( Clone, Show ) ]
+pub struct RGB( pub f64, pub f64, pub f64 );
 
 #[ allow( dead_code ) ]
 impl RGB {
@@ -14,9 +14,9 @@ impl RGB {
 	pub fn gamma( &self, gam : f64 ) -> ( f64, f64, f64 ) {
 		match self {
 			&RGB( r, g, b ) => {
-				let r_ = pow( RGB::clamp( r ), 1.0 / gam );
-				let g_ = pow( RGB::clamp( g ), 1.0 / gam );
-				let b_ = pow( RGB::clamp( b ), 1.0 / gam );
+				let r_ = RGB::clamp( r ).powf( 1.0 / gam );
+				let g_ = RGB::clamp( g ).powf( 1.0 / gam );
+				let b_ = RGB::clamp( b ).powf( 1.0 / gam );
 
 				return ( r_, g_, b_ );
 			}

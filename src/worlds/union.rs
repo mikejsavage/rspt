@@ -3,13 +3,13 @@ use worlds::{ World, Intersection };
 
 #[ allow( dead_code ) ]
 pub struct UnionWorld {
-	w1 : ~World : Send,
-	w2 : ~World : Send,
+	w1 : Box< World + Send >,
+	w2 : Box< World + Send >,
 }
 
 #[ allow( dead_code ) ]
 impl UnionWorld {
-	pub fn new( w1 : ~World : Send, w2 : ~World : Send ) -> UnionWorld {
+	pub fn new( w1 : Box< World + Send >, w2 : Box< World + Send > ) -> UnionWorld {
 		return UnionWorld { w1 : w1, w2 : w2 };
 	}
 }

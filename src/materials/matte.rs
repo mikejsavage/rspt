@@ -5,7 +5,7 @@ use materials::{ Material, BxDF };
 use materials::lambertian::Lambertian;
 
 pub struct Matte {
-	color : RGB,
+	pub color : RGB,
 }
 
 impl Matte {
@@ -17,7 +17,7 @@ impl Matte {
 }
 
 impl Material for Matte {
-	fn get_bxdf( &self, _ : f64, _ : f64 ) -> ~BxDF {
-		return ~Lambertian::new( self.color ) as ~BxDF;
+	fn get_bxdf( &self, _ : f64, _ : f64 ) -> Box< BxDF > {
+		return box Lambertian::new( self.color ) as Box< BxDF >;
 	}
 }

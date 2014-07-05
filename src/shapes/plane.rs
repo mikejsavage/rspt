@@ -5,8 +5,8 @@ use maths::rotation::Rotation;
 use shapes::Shape;
 
 pub struct Plane {
-	normal : Vec3,
-	d : f64,
+	pub normal : Vec3,
+	pub d : f64,
 }
 
 impl Shape for Plane {

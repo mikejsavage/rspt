@@ -1,11 +1,11 @@
-use std::num::{ Float, sqrt };
+use std::num::Float;
 
 use maths::vec::Vec3;
 use shapes::Shape;
 
 pub struct Sphere {
-	centre : Vec3,
-	radius : f64,
+	pub centre : Vec3,
+	pub radius : f64,
 }
 
 impl Shape for Sphere {
@@ -37,7 +37,7 @@ impl Shape for Sphere {
 			return None;
 		}
 
-		let sqrt_d = sqrt( disc );
+		let sqrt_d = disc.sqrt();
 
 		let tl = b - sqrt_d;
 		let tf = b + sqrt_d;

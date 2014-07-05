@@ -1,6 +1,6 @@
 #![ allow( dead_code ) ]
 
-use std::num::sqrt;
+use std::num::Float;
 use std::fmt;
 
 use maths::vec::Vec3;
@@ -150,7 +150,7 @@ impl Rotation {
 		let axis = from.cross( to ).normalised();
 		let cos_theta = from.dot( to );
 
-		return Rotation::about_with_sin_cos( axis, sqrt( 1.0 - cos_theta * cos_theta ), cos_theta );
+		return Rotation::about_with_sin_cos( axis, ( 1.0 - cos_theta * cos_theta ).sqrt(), cos_theta );
 	}
 }
 
@@ -158,8 +158,8 @@ impl Mul< Rotation, Rotation > for Rotation {
 	fn mul( &self, other : &Rotation ) -> Rotation {
 		let mut ret = Rotation::zero();
 
-		for x in range( 0, 3 ) {
-			for y in range( 0, 3 ) {
+		for x in range( 0u, 3 ) {
+			for y in range( 0u, 3 ) {
 				ret.elems[ y ][ x ] =
 					self.elems[ y ][ 0 ] * other.elems[ 0 ][ x ] +
 					self.elems[ y ][ 1 ] * other.elems[ 1 ][ x ] +
@@ -176,8 +176,8 @@ impl Neg< Rotation > for Rotation {
 	fn neg( &self ) -> Rotation {
 		let mut ret = Rotation::zero();
 
-		for x in range( 0, 3 ) {
-			for y in range( 0, 3 ) {
+		for x in range( 0u, 3 ) {
+			for y in range( 0u, 3 ) {
 				ret.elems[ y ][ x ] = -self.elems[ y ][ x ];
 			}
 		}
@@ -188,7 +188,7 @@ impl Neg< Rotation > for Rotation {
 
 impl fmt::Show for Rotation {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
-		return write!( f.buf,
+		return write!( f,
 			"[\n\t[ {}, {}, {} ]\n\t[ {}, {}, {} ]\n\t[ {}, {}, {} ]\n]",
 			self.elems[ 0 ][ 0 ], self.elems[ 0 ][ 1 ], self.elems[ 0 ][ 2 ],
 			self.elems[ 1 ][ 0 ], self.elems[ 1 ][ 1 ], self.elems[ 1 ][ 2 ],

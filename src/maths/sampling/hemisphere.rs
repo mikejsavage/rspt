@@ -1,5 +1,5 @@
-use std::num::{ Float, sqrt };
-use rand::random;
+use std::num::Float;
+use std::rand::random;
 
 use maths::vec::Vec3;
 use maths::angle::{ Angle, Rad };
@@ -10,7 +10,7 @@ pub fn sample() -> Vec3 {
 	let cos_theta = random::< f64 >();
 	let phi = Rad { r : 2.0 * Float::pi() * random::< f64 >() };
 
-	let sin_theta = sqrt( 1.0 - cos_theta * cos_theta );
+	let sin_theta = ( 1.0 - cos_theta * cos_theta ).sqrt();
 	let ( sin_phi, cos_phi ) = phi.sin_cos();
 
 	return Vec3 {
@@ -31,7 +31,7 @@ pub fn sample_cos() -> Vec3 {
 	return Vec3 {
 		x : p.x,
 		y : p.y,
-		z : sqrt( 1.0 - ( p.x * p.x + p.y * p.y ) ),
+		z : ( 1.0 - ( p.x * p.x + p.y * p.y ) ).sqrt(),
 	};
 }
 

@@ -14,7 +14,7 @@ pub mod lambertian;
 pub mod specular;
 
 pub trait Material {
-	fn get_bxdf( &self, u : f64, v : f64 ) -> ~BxDF;
+	fn get_bxdf( &self, u : f64, v : f64 ) -> Box< BxDF >;
 }
 
 pub trait Texture {

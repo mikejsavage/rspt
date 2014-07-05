@@ -38,8 +38,8 @@ static THREADS : uint = 4;
 static mut image : [ ( u32, RGB ), ..WIDTH * HEIGHT ] = [ ( 0, RGB( 0.0, 0.0, 0.0 ) ), ..WIDTH * HEIGHT ];
 
 fn coord() -> ( Vec3, Vec3, Vec3 ) {
-	let uppy = Vec3::new( 0, 0, 1 );
-	let forward = Vec3::new( 1, 0, 0 );
+	let uppy = Vec3::new( 0.0, 0.0, 1.0 );
+	let forward = Vec3::new( 1.0, 0.0, 0.0 );
 
 	let left = uppy.cross( forward ).normalised();
 	let up = forward.cross( left );
@@ -47,8 +47,8 @@ fn coord() -> ( Vec3, Vec3, Vec3 ) {
 	return ( forward, up, left );
 }
 
-fn pixels_for_thread( thread : uint ) -> ~[ uint ] {
-	let mut ps = ~[ ];
+fn pixels_for_thread( thread : uint ) -> Vec< uint > {
+	let mut ps = Vec::new();
 	let mut p = thread;
 
 	while p < WIDTH * HEIGHT {
@@ -60,11 +60,11 @@ fn pixels_for_thread( thread : uint ) -> ~[ uint ] {
 }
 
 fn pixels_to_centres(
-    pixels : &~[ uint ],
+    pixels : &Vec< uint >,
     tl : Vec3, // top left of view frustrum
     tr : Vec3, // top right
     br : Vec3 // bottom right
-) -> ~[ Vec3 ] {
+) -> Vec< Vec3 > {
 	return pixels.iter().map( | pixel | {
 		let x = pixel % WIDTH;
 		let y = pixel / WIDTH;
@@ -126,9 +126,8 @@ fn sampler( eye : Vec3, pixels : &[ uint ], centres : &[ Vec3 ], world : &World,
 	}
 }
 
-fn open_window() -> ( glfw::Glfw, glfw::Window, Receiver< glfw::Error > ) {
-	let ( glfw, errors ) = glfw::init().unwrap();
-	glfw::fail_on_error( &errors );
+fn open_window() -> ( glfw::Glfw, glfw::Window ) {
+	let glfw = glfw::init( glfw::FAIL_ON_ERRORS ).unwrap();
 
 	glfw.window_hint( glfw::Resizable( false ) );
 
@@ -139,17 +138,17 @@ fn open_window() -> ( glfw::Glfw, glfw::Window, Receiver< glfw::Error > ) {
 
 	gl::Ortho( 0.0, WIDTH as f64, HEIGHT as f64, 0.0, -1.0, 1.0 );
 
-	return ( glfw, window, errors );
+	return ( glfw, window );
 }
 
 fn main() {
 	let world = SimpleWorld::cornell();
 	let world_arc = Arc::new( world );
 
-	let eye = Vec3::new( 0, 0, 0 );
+	let eye = Vec3::new( 0.0, 0.0, 0.0 );
 	let ( forward, up, left ) = coord();
 
-	let fov = Deg::new( 90 );
+	let fov = Deg::new( 90.0 );
 	let focal_length = 0.1;
 	let half_focal_height = focal_length * ( fov / 2.0 ).tan();
 	let half_focal_width = half_focal_height * ASPECT_RATIO;
@@ -161,9 +160,9 @@ fn main() {
 	let up_pixel = up * 2.0 * half_focal_height / HEIGHT as f64;
 	let left_pixel = left * 2.0 * half_focal_width / WIDTH as f64;
 
-	let pixels = std::slice::from_fn( THREADS, pixels_for_thread );
+	let pixels = Vec::from_fn( THREADS, pixels_for_thread );
 
-	let centres : ~[ ~[ Vec3 ] ] = pixels.iter().map( | ps | {
+	let centres : Vec< Vec< Vec3 > > = pixels.iter().map( | ps | {
 		return pixels_to_centres( ps, top_left, top_right, bottom_right );
 	} ).collect();
 
@@ -180,15 +179,14 @@ fn main() {
 			let centres = centres_arc.deref();
 			let world = world_arc.deref();
 
-			sampler( eye, pixels[ n ], centres[ n ], world, up_pixel, left_pixel );
+			sampler( eye, pixels.get( n ).as_slice(), centres.get( n ).as_slice(), world, up_pixel, left_pixel );
 		} );
 	}
 
-	let ( glfw, window, errors ) = open_window();
+	let ( glfw, window ) = open_window();
 
 	while !window.should_close() {
 		glfw.poll_events();
-		glfw::fail_on_error( &errors );
 
 		gl::Begin( gl::POINTS );
 

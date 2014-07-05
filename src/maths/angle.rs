@@ -1,15 +1,17 @@
-use std::num::{ ToPrimitive, Zero, zero, Float, sin, cos, tan, asin, acos, atan, atan2 };
+use std::num::{ Float, FloatMath };
 use std::fmt;
 
-#[ deriving( Clone, Eq, Ord ) ]
-pub struct Deg { d : f64 }
+#[ deriving( Clone ) ]
+pub struct Deg {
+	pub d : f64,
+}
 
-#[ deriving( Clone, Eq, Ord ) ]
-pub struct Rad { r : f64 }
+#[ deriving( Clone ) ]
+pub struct Rad {
+	pub r : f64,
+}
 
-pub trait Angle : Clone + Eq + Ord
-	+ Equiv< Self >
-	+ Zero
+pub trait Angle : Clone
 	+ Add< Self, Self > + Sub< Self, Self > + Neg< Self >
 	+ Mul< f64, Self > + Div< f64, Self >
 	+ fmt::Show
@@ -21,11 +23,11 @@ pub trait Angle : Clone + Eq + Ord
 
 	#[ inline ]
 	fn normalised( &self ) -> Self {
-		if *self > Angle::turn() {
+		if self.rad().r > Float::two_pi() {
 			return *self - Angle::turn();
 		}
 
-		if *self < zero() {
+		if self.rad().r < 0.0 {
 			return *self + Angle::turn();
 		}
 
@@ -45,8 +47,8 @@ pub trait Angle : Clone + Eq + Ord
 #[ allow( dead_code ) ]
 impl Deg {
 	#[ inline ]
-	pub fn new< T : ToPrimitive >( x : T ) -> Deg {
-		return Deg { d : x.to_f64().unwrap() };
+	pub fn new( x : f64 ) -> Deg {
+		return Deg { d : x };
 	}
 }
 
@@ -68,61 +70,42 @@ impl Angle for Deg {
 
 	#[ inline ]
 	fn sin( &self ) -> f64 {
-		return sin( self.rad().r );
+		return self.rad().r.sin();
 	}
 
 	#[ inline ]
 	fn cos( &self ) -> f64 {
-		return cos( self.rad().r );
+		return self.rad().r.cos();
 	}
 
 	#[ inline ]
 	fn tan( &self ) -> f64 {
-		return tan( self.rad().r );
+		return self.rad().r.tan();
 	}
 
 	#[ inline ]
 	fn asin( x : f64 ) -> Deg {
-		return Rad { r : asin( x ) }.deg();
+		return Rad { r : x.asin() }.deg();
 	}
 
 	#[ inline ]
 	fn acos( x : f64 ) -> Deg {
-		return Rad { r : acos( x ) }.deg();
+		return Rad { r : x.acos() }.deg();
 	}
 
 	#[ inline ]
 	fn atan( x : f64 ) -> Deg {
-		return Rad { r : atan( x ) }.deg();
+		return Rad { r : x.atan() }.deg();
 	}
 
 	#[ inline ]
 	fn atan2( y : f64, x : f64 ) -> Deg {
-		return Rad { r : atan2( y, x ) }.deg();
+		return Rad { r : y.atan2( x ) }.deg();
 	}
 
 	#[ inline ]
 	fn sin_cos( &self ) -> ( f64, f64 ) {
-		return ( sin( self.rad().r ), cos( self.rad().r ) );
-	}
-}
-
-impl Equiv< Deg > for Deg {
-	#[ inline ]
-	fn equiv( &self, other : &Deg ) -> bool {
-		return self.normalised() == other.normalised();
-	}
-}
-
-impl Zero for Deg {
-	#[ inline ]
-	fn zero() -> Deg {
-		return Deg { d : 0.0 };
-	}
-
-	#[ inline ]
-	fn is_zero( &self ) -> bool {
-		return *self == zero();
+		return ( self.rad().r.sin(), self.rad().r.cos() );
 	}
 }
 
@@ -164,13 +147,12 @@ impl Neg< Deg > for Deg {
 impl fmt::Show for Deg {
 	#[ inline ]
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
-		return write!( f.buf, "{} deg", self.d );
+		return write!( f, "{} deg", self.d );
 	}
 }
 
 #[ allow( dead_code ) ]
 impl Rad {
-	// having a ToPrimitive constructor makes no sense for radians
 	#[ inline ]
 	pub fn new( x : f64 ) -> Rad {
 		return Rad { r : x };
@@ -195,61 +177,42 @@ impl Angle for Rad {
 
 	#[ inline ]
 	fn sin( &self ) -> f64 {
-		return sin( self.r );
+		return self.r.sin();
 	}
 
 	#[ inline ]
 	fn cos( &self ) -> f64 {
-		return cos( self.r );
+		return self.r.cos();
 	}
 
 	#[ inline ]
 	fn tan( &self ) -> f64 {
-		return tan( self.r );
+		return self.r.tan();
 	}
 
 	#[ inline ]
 	fn asin( x : f64 ) -> Rad {
-		return Rad { r : asin( x ) };
+		return Rad { r : x.asin() };
 	}
 
 	#[ inline ]
 	fn acos( x : f64 ) -> Rad {
-		return Rad { r : acos( x ) };
+		return Rad { r : x.acos() };
 	}
 
 	#[ inline ]
 	fn atan( x : f64 ) -> Rad {
-		return Rad { r : atan( x ) };
+		return Rad { r : x.atan() };
 	}
 
 	#[ inline ]
 	fn atan2( y : f64, x : f64 ) -> Rad {
-		return Rad { r : atan2( y, x ) };
+		return Rad { r : y.atan2( x ) };
 	}
 
 	#[ inline ]
 	fn sin_cos( &self ) -> ( f64, f64 ) {
-		return ( sin( self.r ), cos( self.r ) );
-	}
-}
-
-impl Equiv< Rad > for Rad {
-	#[ inline ]
-	fn equiv( &self, other : &Rad ) -> bool {
-		return self.normalised() == other.normalised();
-	}
-}
-
-impl Zero for Rad {
-	#[ inline ]
-	fn zero() -> Rad {
-		return Rad { r : 0.0 };
-	}
-
-	#[ inline ]
-	fn is_zero( &self ) -> bool {
-		return *self == zero();
+		return ( self.r.sin(), self.r.cos() );
 	}
 }
 
@@ -290,6 +253,6 @@ impl Neg< Rad > for Rad {
 
 impl fmt::Show for Rad {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
-		return write!( f.buf, "{}π rad", self.r / Float::pi() );
+		return write!( f, "{}π rad", self.r / Float::pi() );
 	}
 }

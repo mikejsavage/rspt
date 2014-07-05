@@ -5,9 +5,9 @@ pub mod simple;
 pub mod union;
 
 pub struct Intersection< 'a > {
-	other : &'a Entity,
-	pos : Vec3,
-	t : f64,
+	pub other : &'a Entity,
+	pub pos : Vec3,
+	pub t : f64,
 }
 
 pub trait World {

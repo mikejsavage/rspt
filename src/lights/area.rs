@@ -9,7 +9,7 @@ use lights::Light;
 
 pub struct AreaLight {
 	color : RGB,
-	priv area : f64,
+	area : f64,
 }
 
 impl AreaLight {
