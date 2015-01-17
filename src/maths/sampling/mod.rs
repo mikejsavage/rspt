@@ -4,3 +4,5 @@ pub mod tent;
 pub mod disk;
 #[ allow( dead_code ) ]
 pub mod hemisphere;
+#[ allow( dead_code ) ]
+pub mod cdf;

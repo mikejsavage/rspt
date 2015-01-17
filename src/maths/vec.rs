@@ -1,7 +1,8 @@
+use std::ops::{ Add, Sub, Mul, Div, Neg };
 use std::num::Float;
 use std::fmt;
 
-#[ deriving( Clone, PartialEq ) ]
+#[ derive( Copy, PartialEq ) ]
 pub struct Vec3 {
 	pub x : f64,
 	pub y : f64,
@@ -20,39 +21,39 @@ impl Vec3 {
 	}
 
 	#[ inline ]
-	pub fn length( &self ) -> f64 {
+	pub fn length( self ) -> f64 {
 		return self.sqlength().sqrt();
 	}
 
 	#[ inline ]
-	pub fn sqlength( &self ) -> f64 {
+	pub fn sqlength( self ) -> f64 {
 		return self.x * self.x + self.y * self.y + self.z * self.z;
 	}
 
 	#[ inline ]
-	pub fn normalised( &self ) -> Vec3 {
+	pub fn normalised( self ) -> Vec3 {
 		return self / self.length();
 	}
 
 	#[ inline ]
-	pub fn fastnormalised( &self ) -> Vec3 {
-		return self * self.sqlength().rsqrt();
+	pub fn fastnormalised( self ) -> Vec3 {
+		return self * Float::rsqrt( self.sqlength() );
 	}
 
 	#[ inline ]
-	pub fn dir_length( &self ) -> ( Vec3, f64 ) {
+	pub fn dir_length( self ) -> ( Vec3, f64 ) {
 		let len = self.length();
 
 		return ( self / len, len );
 	}
 
 	#[ inline ]
-	pub fn dot( &self, other : Vec3 ) -> f64 {
+	pub fn dot( self, other : Vec3 ) -> f64 {
 		return self.x * other.x + self.y * other.y + self.z * other.z;
 	}
 
 	#[ inline ]
-	pub fn cross( &self, other : Vec3 ) -> Vec3 {
+	pub fn cross( self, other : Vec3 ) -> Vec3 {
 		return Vec3 {
 			x : self.y * other.z - self.z * other.y,
 			y : -( self.x * other.z - self.z * other.x ),
@@ -62,7 +63,7 @@ impl Vec3 {
 
 	// Hadamard product
 	#[ inline ]
-	pub fn hprod( &self, other : &Vec3 ) -> Vec3 {
+	pub fn hprod( self, other : &Vec3 ) -> Vec3 {
  		return Vec3 {
  			x : self.x * other.x,
  			y : self.y * other.y,
@@ -71,7 +72,7 @@ impl Vec3 {
 	}
 
 	#[ inline ]
-	pub fn hdiv( &self, other : &Vec3 ) -> Vec3 {
+	pub fn hdiv( self, other : &Vec3 ) -> Vec3 {
  		return Vec3 {
  			x : self.x / other.x,
  			y : self.y / other.y,
@@ -95,9 +96,11 @@ impl Vec3 {
 	}
 }
 
-impl Add< Vec3, Vec3 > for Vec3 {
+impl Add for Vec3 {
+	type Output = Vec3;
+
 	#[ inline ]
-	fn add( &self, other : &Vec3 ) -> Vec3 {
+	fn add( self, other : Vec3 ) -> Vec3 {
 		return Vec3 {
 			x : self.x + other.x,
 			y : self.y + other.y,
@@ -106,9 +109,11 @@ impl Add< Vec3, Vec3 > for Vec3 {
 	}
 }
 
-impl Sub< Vec3, Vec3 > for Vec3 {
+impl Sub for Vec3 {
+	type Output = Vec3;
+
 	#[ inline ]
-	fn sub( &self, other : &Vec3 ) -> Vec3 {
+	fn sub( self, other : Vec3 ) -> Vec3 {
 		return Vec3 {
 			x : self.x - other.x,
 			y : self.y - other.y,
@@ -117,21 +122,25 @@ impl Sub< Vec3, Vec3 > for Vec3 {
 	}
 }
 
-impl Mul< f64, Vec3 > for Vec3 {
+impl Mul< f64 > for Vec3 {
+	type Output = Vec3;
+
 	#[ inline ]
-	fn mul( &self, s : &f64 ) -> Vec3 {
+	fn mul( self, s : f64 ) -> Vec3 {
 		return Vec3 {
-			x : self.x * *s,
-			y : self.y * *s,
-			z : self.z * *s,
+			x : self.x * s,
+			y : self.y * s,
+			z : self.z * s,
 		};
 	}
 }
 
-impl Div< f64, Vec3 > for Vec3 {
+impl Div< f64 > for Vec3 {
+	type Output = Vec3;
+
 	#[ inline ]
-	fn div( &self, d : &f64 ) -> Vec3 {
-		let s = 1.0 / *d;
+	fn div( self, d : f64 ) -> Vec3 {
+		let s = 1.0 / d;
 
 		return Vec3 {
 			x : self.x * s,
@@ -141,9 +150,11 @@ impl Div< f64, Vec3 > for Vec3 {
 	}
 }
 
-impl Neg< Vec3 > for Vec3 {
+impl Neg for Vec3 {
+	type Output = Vec3;
+
 	#[ inline ]
-	fn neg( &self ) -> Vec3 {
+	fn neg( self ) -> Vec3 {
 		return Vec3 {
 			x : -self.x,
 			y : -self.y,

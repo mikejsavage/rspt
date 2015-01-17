@@ -1,4 +1,5 @@
 use std::num::Float;
+use std::f64::consts::PI;
 
 use maths::vec::Vec3;
 use shapes::Shape;
@@ -37,7 +38,7 @@ impl Shape for Sphere {
 			return None;
 		}
 
-		let sqrt_d = disc.sqrt();
+		let sqrt_d = Float::sqrt( disc );
 
 		let tl = b - sqrt_d;
 		let tf = b + sqrt_d;
@@ -63,6 +64,6 @@ impl Shape for Sphere {
 	}
 
 	fn surface_area( &self ) -> f64 {
-		return 4.0 * Float::pi() * self.radius * self.radius;
+		return 4.0 * PI * self.radius * self.radius;
 	}
 }

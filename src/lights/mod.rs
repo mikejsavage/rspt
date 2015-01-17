@@ -5,7 +5,7 @@ use maths::vec::Vec3;
 
 pub mod area;
 
-pub trait Light {
+pub trait Light : Copy {
 	fn power( &self ) -> RGB;
 	fn emittance( &self, normal : Vec3, dir : Vec3 ) -> RGB;
 

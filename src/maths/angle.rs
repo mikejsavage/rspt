@@ -1,26 +1,28 @@
-use std::num::{ Float, FloatMath, Zero, zero };
+use std::num::Float;
+use std::ops::{ Add, Sub, Mul, Div, Neg };
+use std::f64::consts::{ PI, PI_2 };
 use std::fmt;
 
-#[ deriving( Clone, PartialEq, PartialOrd ) ]
+#[ derive( Copy, Clone, PartialEq, PartialOrd ) ]
 pub struct Deg {
 	pub d : f64,
 }
 
-#[ deriving( Clone, PartialEq, PartialOrd ) ]
+#[ derive( Copy, Clone, PartialEq, PartialOrd ) ]
 pub struct Rad {
 	pub r : f64,
 }
 
-pub trait Angle : Clone + PartialEq + PartialOrd
-	+ Zero
-	+ Add< Self, Self > + Sub< Self, Self > + Neg< Self >
-	+ Mul< f64, Self > + Div< f64, Self >
+pub trait Angle : Copy + Clone + PartialEq + PartialOrd
+	+ Add< Output = Self > + Sub< Output = Self > + Neg
+	+ Mul< f64 > + Div< f64 >
 	+ fmt::Show
 {
-	fn deg( &self ) -> Deg;
-	fn rad( &self ) -> Rad;
+	fn deg( self ) -> Deg;
+	fn rad( self ) -> Rad;
 
 	fn turn() -> Self;
+	fn zero() -> Self;
 
 	#[ inline ]
 	fn normalised( &self ) -> Self {
@@ -30,16 +32,16 @@ pub trait Angle : Clone + PartialEq + PartialOrd
 			result = result - Angle::turn();
 		}
 
-		while result < zero() {
+		while result < Angle::zero() {
 			result = result + Angle::turn();
 		}
 
 		return result;
 	}
 
-	fn sin( &self ) -> f64;
-	fn cos( &self ) -> f64;
-	fn tan( &self ) -> f64;
+	fn sin( self ) -> f64;
+	fn cos( self ) -> f64;
+	fn tan( self ) -> f64;
 	fn asin( n : f64 ) -> Self;
 	fn acos( n : f64 ) -> Self;
 	fn atan( n : f64 ) -> Self;
@@ -57,13 +59,13 @@ impl Deg {
 
 impl Angle for Deg {
 	#[ inline ]
-	fn deg( &self ) -> Deg {
-		return *self;
+	fn deg( self ) -> Deg {
+		return self;
 	}
 
 	#[ inline ]
-	fn rad( &self ) -> Rad {
-		return Rad { r : self.d * Float::pi() / 180.0 };
+	fn rad( self ) -> Rad {
+		return Rad { r : self.d * PI / 180.0 };
 	}
 
 	#[ inline ]
@@ -72,33 +74,38 @@ impl Angle for Deg {
 	}
 
 	#[ inline ]
-	fn sin( &self ) -> f64 {
-		return self.rad().r.sin();
+	fn zero() -> Deg {
+		return Deg { d : 0.0 };
 	}
 
 	#[ inline ]
-	fn cos( &self ) -> f64 {
-		return self.rad().r.cos();
+	fn sin( self ) -> f64 {
+		return Float::sin( self.rad().r );
 	}
 
 	#[ inline ]
-	fn tan( &self ) -> f64 {
-		return self.rad().r.tan();
+	fn cos( self ) -> f64 {
+		return Float::cos( self.rad().r );
+	}
+
+	#[ inline ]
+	fn tan( self ) -> f64 {
+		return Float::tan( self.rad().r.tan() );
 	}
 
 	#[ inline ]
 	fn asin( x : f64 ) -> Deg {
-		return Rad { r : x.asin() }.deg();
+		return Rad { r : Float::asin( x ) }.deg();
 	}
 
 	#[ inline ]
 	fn acos( x : f64 ) -> Deg {
-		return Rad { r : x.acos() }.deg();
+		return Rad { r : Float::acos( x ) }.deg();
 	}
 
 	#[ inline ]
 	fn atan( x : f64 ) -> Deg {
-		return Rad { r : x.atan() }.deg();
+		return Rad { r : Float::atan( x ) }.deg();
 	}
 
 	#[ inline ]
@@ -112,49 +119,46 @@ impl Angle for Deg {
 	}
 }
 
-impl Zero for Deg {
-	#[ inline ]
-	fn zero() -> Deg {
-		return Deg { d : 0.0 };
-	}
+impl Add for Deg {
+	type Output = Deg;
 
 	#[ inline ]
-	fn is_zero( &self ) -> bool {
-		return *self == zero();
-	}
-}
-
-impl Add< Deg, Deg > for Deg {
-	#[ inline ]
-	fn add( &self, other : &Deg ) -> Deg {
+	fn add( self, other : Deg ) -> Deg {
 		return Deg { d : self.d + other.d };
 	}
 }
 
-impl Sub< Deg, Deg > for Deg {
+impl Sub for Deg {
+	type Output = Deg;
+
 	#[ inline ]
-	fn sub( &self, other : &Deg ) -> Deg {
+	fn sub( self, other : Deg ) -> Deg {
 		return Deg { d : self.d - other.d };
 	}
 }
 
-impl Mul< f64, Deg > for Deg {
+impl Mul< f64 > for Deg {
+	type Output = Deg;
 	#[ inline ]
-	fn mul( &self, s : &f64 ) -> Deg {
-		return Deg { d : self.d * *s };
+	fn mul( self, s : f64 ) -> Deg {
+		return Deg { d : self.d * s };
 	}
 }
 
-impl Div< f64, Deg > for Deg {
+impl Div< f64 > for Deg {
+	type Output = Deg;
+
 	#[ inline ]
-	fn div( &self, s : &f64 ) -> Deg {
-		return Deg { d : self.d / *s };
+	fn div( self, s : f64 ) -> Deg {
+		return Deg { d : self.d / s };
 	}
 }
 
-impl Neg< Deg > for Deg {
+impl Neg for Deg {
+	type Output = Deg;
+
 	#[ inline ]
-	fn neg( &self ) -> Deg {
+	fn neg( self ) -> Deg {
 		return Deg { d : -self.d };
 	}
 }
@@ -176,32 +180,37 @@ impl Rad {
 
 impl Angle for Rad {
 	#[ inline ]
-	fn deg( &self ) -> Deg {
-		return Deg { d : self.r * 180.0 / Float::pi() };
+	fn deg( self ) -> Deg {
+		return Deg { d : self.r * 180.0 / PI };
 	}
 
 	#[ inline ]
-	fn rad( &self ) -> Rad {
-		return *self;
+	fn rad( self ) -> Rad {
+		return self;
 	}
 
 	#[ inline ]
 	fn turn() -> Rad {
-		return Rad { r : Float::two_pi() };
+		return Rad { r : PI_2 };
 	}
 
 	#[ inline ]
-	fn sin( &self ) -> f64 {
+	fn zero() -> Rad {
+		return Rad { r : 0.0 };
+	}
+
+	#[ inline ]
+	fn sin( self ) -> f64 {
 		return self.r.sin();
 	}
 
 	#[ inline ]
-	fn cos( &self ) -> f64 {
+	fn cos( self ) -> f64 {
 		return self.r.cos();
 	}
 
 	#[ inline ]
-	fn tan( &self ) -> f64 {
+	fn tan( self ) -> f64 {
 		return self.r.tan();
 	}
 
@@ -231,55 +240,53 @@ impl Angle for Rad {
 	}
 }
 
-impl Zero for Rad {
-	#[ inline ]
-	fn zero() -> Rad {
-		return Rad { r : 0.0 };
-	}
+impl Add for Rad {
+	type Output = Rad;
 
 	#[ inline ]
-	fn is_zero( &self ) -> bool {
-		return *self == zero();
-	}
-}
-
-impl Add< Rad, Rad > for Rad {
-	#[ inline ]
-	fn add( &self, other : &Rad ) -> Rad {
+	fn add( self, other : Rad ) -> Rad {
 		return Rad { r : self.r + other.r };
 	}
 }
 
-impl Sub< Rad, Rad > for Rad {
+impl Sub for Rad {
+	type Output = Rad;
+
 	#[ inline ]
-	fn sub( &self, other : &Rad ) -> Rad {
+	fn sub( self, other : Rad ) -> Rad {
 		return Rad { r : self.r - other.r };
 	}
 }
 
-impl Mul< f64, Rad > for Rad {
+impl Mul< f64 > for Rad {
+	type Output = Rad;
+
 	#[ inline ]
-	fn mul( &self, s : &f64 ) -> Rad {
-		return Rad { r : self.r * *s };
+	fn mul( self, s : f64 ) -> Rad {
+		return Rad { r : self.r * s };
 	}
 }
 
-impl Div< f64, Rad > for Rad {
+impl Div< f64 > for Rad {
+	type Output = Rad;
+
 	#[ inline ]
-	fn div( &self, s : &f64 ) -> Rad {
-		return Rad { r : self.r / *s };
+	fn div( self, s : f64 ) -> Rad {
+		return Rad { r : self.r / s };
 	}
 }
 
-impl Neg< Rad > for Rad {
+impl Neg for Rad {
+	type Output = Rad;
+
 	#[ inline ]
-	fn neg( &self ) -> Rad {
+	fn neg( self ) -> Rad {
 		return Rad { r : -self.r };
 	}
 }
 
 impl fmt::Show for Rad {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
-		return write!( f, "{}π rad", self.r / Float::pi() );
+		return write!( f, "{}π rad", self.r / PI );
 	}
 }

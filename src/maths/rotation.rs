@@ -1,5 +1,7 @@
 #![ allow( dead_code ) ]
 
+use std::ops::{ Mul, Neg };
+
 use std::num::Float;
 use std::fmt;
 
@@ -7,7 +9,7 @@ use maths::vec::Vec3;
 use maths::angle::Angle;
 
 pub struct Rotation {
-	elems : [ [ f64, ..3 ], ..3 ],
+	elems : [ [ f64; 3 ]; 3 ],
 }
 
 impl Rotation {
@@ -146,17 +148,20 @@ impl Rotation {
 
 		let axis = from.cross( to ).normalised();
 		let cos_theta = from.dot( to );
+		let sin_theta = ( 1.0 - cos_theta * cos_theta ).sqrt();
 
-		return Rotation::about_with_sin_cos( axis, ( 1.0 - cos_theta * cos_theta ).sqrt(), cos_theta );
+		return Rotation::about_with_sin_cos( axis, sin_theta, cos_theta );
 	}
 }
 
-impl Mul< Rotation, Rotation > for Rotation {
-	fn mul( &self, other : &Rotation ) -> Rotation {
+impl Mul for Rotation {
+	type Output = Rotation;
+
+	fn mul( self, other : Rotation ) -> Rotation {
 		let mut ret = Rotation::zero();
 
-		for x in range( 0u, 3 ) {
-			for y in range( 0u, 3 ) {
+		for x in range( 0, 3 ) {
+			for y in range( 0, 3 ) {
 				ret.elems[ y ][ x ] =
 					self.elems[ y ][ 0 ] * other.elems[ 0 ][ x ] +
 					self.elems[ y ][ 1 ] * other.elems[ 1 ][ x ] +
@@ -168,13 +173,15 @@ impl Mul< Rotation, Rotation > for Rotation {
 	}
 }
 
-impl Neg< Rotation > for Rotation {
+impl Neg for Rotation {
+	type Output = Rotation;
+
 	#[ inline ]
-	fn neg( &self ) -> Rotation {
+	fn neg( self ) -> Rotation {
 		let mut ret = Rotation::zero();
 
-		for x in range( 0u, 3 ) {
-			for y in range( 0u, 3 ) {
+		for x in range( 0, 3 ) {
+			for y in range( 0, 3 ) {
 				ret.elems[ y ][ x ] = -self.elems[ y ][ x ];
 			}
 		}

@@ -1,4 +1,4 @@
-use std::num::Float;
+use std::f64::INFINITY;
 
 use maths::vec::Vec3;
 use maths::rotation::Rotation;
@@ -36,6 +36,6 @@ impl Shape for Plane {
 	}
 
 	fn surface_area( &self ) -> f64 {
-		return Float::infinity();
+		return INFINITY;
 	}
 }

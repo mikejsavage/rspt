@@ -3,9 +3,9 @@ MAIN = src/main.rs
 
 TARGET = rspt
 
-RFLAGS = -O -W unnecessary-qualification -W unnecessary-typecast -W unused-result
-RFLAGS += -L gl-rs/lib
-RFLAGS += -L glfw-rs/lib
+RFLAGS = -O -W unused-qualifications -W unused-typecasts -W unused-results
+RFLAGS += -L deps/gl-rs/ -L deps/gl-rs/src/gl_common/
+RFLAGS += -L deps/glfw-rs/ -L deps/semver/
 RFLAGS += -L rust-stb-image
 RFLAGS += -C link-args="-lglfw"
 

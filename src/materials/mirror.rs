@@ -18,6 +18,6 @@ impl Mirror {
 
 impl Material for Mirror {
 	fn get_bxdf( &self, _ : f64, _ : f64 ) -> Box< BxDF > {
-		return box Specular::new( self.color ) as Box< BxDF >;
+		return Box::new( Specular::new( self.color ) ); // as Box< BxDF >;
 	}
 }
