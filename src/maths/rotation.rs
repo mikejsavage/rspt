@@ -2,7 +2,6 @@
 
 use std::ops::{ Mul, Neg };
 
-use std::num::Float;
 use std::fmt;
 
 use maths::vec::Vec3;
@@ -74,7 +73,7 @@ impl Rotation {
 		};
 	}
 
-	pub fn x( angle : &Angle ) -> Rotation {
+	pub fn x< A : Angle >( angle : &A ) -> Rotation {
 		let ( s, c ) = angle.sin_cos();
 
 		return Rotation {
@@ -86,7 +85,7 @@ impl Rotation {
 		};
 	}
 
-	pub fn y( angle : &Angle ) -> Rotation {
+	pub fn y< A : Angle >( angle : &A ) -> Rotation {
 		let ( s, c ) = angle.sin_cos();
 
 		return Rotation {
@@ -98,7 +97,7 @@ impl Rotation {
 		};
 	}
 
-	pub fn z( angle : &Angle ) -> Rotation {
+	pub fn z< A : Angle >( angle : &A ) -> Rotation {
 		let ( s, c ) = angle.sin_cos();
 
 		return Rotation {
@@ -110,7 +109,7 @@ impl Rotation {
 		};
 	}
 
-	pub fn about( axis : Vec3, angle : &Angle ) -> Rotation {
+	pub fn about< A : Angle >( axis : Vec3, angle : &A ) -> Rotation {
 		let ( s, c ) = angle.sin_cos();
 
 		return Rotation::about_with_sin_cos( axis, s, c );
@@ -160,8 +159,8 @@ impl Mul for Rotation {
 	fn mul( self, other : Rotation ) -> Rotation {
 		let mut ret = Rotation::zero();
 
-		for x in range( 0, 3 ) {
-			for y in range( 0, 3 ) {
+		for x in 0 .. 3 {
+			for y in 0 .. 3 {
 				ret.elems[ y ][ x ] =
 					self.elems[ y ][ 0 ] * other.elems[ 0 ][ x ] +
 					self.elems[ y ][ 1 ] * other.elems[ 1 ][ x ] +
@@ -180,8 +179,8 @@ impl Neg for Rotation {
 	fn neg( self ) -> Rotation {
 		let mut ret = Rotation::zero();
 
-		for x in range( 0, 3 ) {
-			for y in range( 0, 3 ) {
+		for x in 0 .. 3 {
+			for y in 0 .. 3 {
 				ret.elems[ y ][ x ] = -self.elems[ y ][ x ];
 			}
 		}
@@ -190,7 +189,7 @@ impl Neg for Rotation {
 	}
 }
 
-impl fmt::Show for Rotation {
+impl fmt::Debug for Rotation {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
 		return write!( f,
 			"[\n\t[ {}, {}, {} ]\n\t[ {}, {}, {} ]\n\t[ {}, {}, {} ]\n]",

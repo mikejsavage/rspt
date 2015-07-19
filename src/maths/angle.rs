@@ -1,6 +1,6 @@
-use std::num::Float;
+use std::f64;
 use std::ops::{ Add, Sub, Mul, Div, Neg };
-use std::f64::consts::{ PI, PI_2 };
+use std::f64::consts::{ PI };
 use std::fmt;
 
 #[ derive( Copy, Clone, PartialEq, PartialOrd ) ]
@@ -16,7 +16,7 @@ pub struct Rad {
 pub trait Angle : Copy + Clone + PartialEq + PartialOrd
 	+ Add< Output = Self > + Sub< Output = Self > + Neg
 	+ Mul< f64 > + Div< f64 >
-	+ fmt::Show
+	+ fmt::Debug
 {
 	fn deg( self ) -> Deg;
 	fn rad( self ) -> Rad;
@@ -80,32 +80,32 @@ impl Angle for Deg {
 
 	#[ inline ]
 	fn sin( self ) -> f64 {
-		return Float::sin( self.rad().r );
+		return f64::sin( self.rad().r );
 	}
 
 	#[ inline ]
 	fn cos( self ) -> f64 {
-		return Float::cos( self.rad().r );
+		return f64::cos( self.rad().r );
 	}
 
 	#[ inline ]
 	fn tan( self ) -> f64 {
-		return Float::tan( self.rad().r.tan() );
+		return f64::tan( self.rad().r.tan() );
 	}
 
 	#[ inline ]
 	fn asin( x : f64 ) -> Deg {
-		return Rad { r : Float::asin( x ) }.deg();
+		return Rad { r : f64::asin( x ) }.deg();
 	}
 
 	#[ inline ]
 	fn acos( x : f64 ) -> Deg {
-		return Rad { r : Float::acos( x ) }.deg();
+		return Rad { r : f64::acos( x ) }.deg();
 	}
 
 	#[ inline ]
 	fn atan( x : f64 ) -> Deg {
-		return Rad { r : Float::atan( x ) }.deg();
+		return Rad { r : f64::atan( x ) }.deg();
 	}
 
 	#[ inline ]
@@ -163,7 +163,7 @@ impl Neg for Deg {
 	}
 }
 
-impl fmt::Show for Deg {
+impl fmt::Debug for Deg {
 	#[ inline ]
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
 		return write!( f, "{} deg", self.d );
@@ -191,7 +191,7 @@ impl Angle for Rad {
 
 	#[ inline ]
 	fn turn() -> Rad {
-		return Rad { r : PI_2 };
+		return Rad { r : PI * 2.0 };
 	}
 
 	#[ inline ]
@@ -285,7 +285,7 @@ impl Neg for Rad {
 	}
 }
 
-impl fmt::Show for Rad {
+impl fmt::Debug for Rad {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
 		return write!( f, "{}π rad", self.r / PI );
 	}

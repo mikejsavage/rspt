@@ -1,8 +1,8 @@
 use std::ops::{ Add, Sub, Mul, Div, Neg };
-use std::num::Float;
+use std::f64;
 use std::fmt;
 
-#[ derive( Copy, PartialEq ) ]
+#[ derive( Clone, Copy, PartialEq ) ]
 pub struct Vec3 {
 	pub x : f64,
 	pub y : f64,
@@ -22,7 +22,7 @@ impl Vec3 {
 
 	#[ inline ]
 	pub fn length( self ) -> f64 {
-		return self.sqlength().sqrt();
+		return f64::sqrt( self.sqlength() );
 	}
 
 	#[ inline ]
@@ -33,11 +33,6 @@ impl Vec3 {
 	#[ inline ]
 	pub fn normalised( self ) -> Vec3 {
 		return self / self.length();
-	}
-
-	#[ inline ]
-	pub fn fastnormalised( self ) -> Vec3 {
-		return self * Float::rsqrt( self.sqlength() );
 	}
 
 	#[ inline ]
@@ -163,7 +158,7 @@ impl Neg for Vec3 {
 	}
 }
 
-impl fmt::Show for Vec3 {
+impl fmt::Debug for Vec3 {
 	fn fmt( &self, f : &mut fmt::Formatter ) -> fmt::Result {
 		return write!( f, "[ {}, {}, {} ]", self.x, self.y, self.z );
 	}

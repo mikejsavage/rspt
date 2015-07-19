@@ -1,4 +1,4 @@
-use std::rand::random;
+use rand;
 
 pub struct CDF< T > {
 	elems : Vec< T >,
@@ -22,7 +22,7 @@ impl< T > CDF< T > {
 	}
 
 	pub fn sample< 'a >( &'a self ) -> &'a T {
-		return self.sample_with( random::< f64 >() );
+		return self.sample_with( rand::random() );
 	}
 
 	pub fn sample_with< 'a >( &'a self, u : f64 ) -> &'a T {

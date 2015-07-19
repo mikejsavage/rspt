@@ -3,11 +3,9 @@ extern crate rand;
 extern crate gl;
 extern crate glfw;
 
-use std::num::Float;
-use std::io::timer::sleep;
-use std::time::Duration;
+use std::f64;
+use std::thread;
 use std::sync::Arc;
-use std::thread::Thread;
 
 use maths::color::RGB;
 use maths::vec::Vec3;
@@ -95,7 +93,7 @@ fn irradiance( world : &World, start : Vec3, dir : Vec3, depth : usize ) -> RGB 
 			return ( &light as &Light ).emittance( normal, -dir );
 		} );
 
-		let throughput = Float::abs( normal.dot( outgoing ) ) / pdf;
+		let throughput = f64::abs( normal.dot( outgoing ) ) / pdf;
 
 		return emittance + ( reflectance * irradiance( world, is.pos, outgoing, depth + 1 ) ) * throughput;
 	} );
@@ -107,7 +105,7 @@ fn sampler( eye : Vec3, pixels : &[ usize ], centres : &[ Vec3 ], world : &World
 	loop {
 		samples += 1;
 
-		for i in range( 0, pixels.len() ) {
+		for i in 0 .. pixels.len() {
 			let dx = left_pixel * tent::sample();
 			let dy = up_pixel * tent::sample();
 			let ray = ( centres[ i ] + dx + dy - eye ).normalised();
@@ -126,11 +124,11 @@ fn sampler( eye : Vec3, pixels : &[ usize ], centres : &[ Vec3 ], world : &World
 }
 
 fn open_window() -> ( glfw::Glfw, glfw::Window ) {
-	let glfw = glfw::init( glfw::FAIL_ON_ERRORS ).unwrap();
+	let mut glfw = glfw::init( glfw::FAIL_ON_ERRORS ).unwrap();
 
 	glfw.window_hint( glfw::WindowHint::Resizable( false ) );
 
-	let ( window, _ ) = glfw.create_window( WIDTH as u32, HEIGHT as u32, "rspt", glfw::WindowMode::Windowed ).unwrap();
+	let ( mut window, _ ) = glfw.create_window( WIDTH as u32, HEIGHT as u32, "rspt", glfw::WindowMode::Windowed ).unwrap();
 	window.make_current();
 
 	gl::load_with( | s | window.get_proc_address( s ) );
@@ -161,7 +159,7 @@ fn main() {
 	let up_pixel = up * 2.0 * half_focal_height / HEIGHT as f64;
 	let left_pixel = left * 2.0 * half_focal_width / WIDTH as f64;
 
-	let pixels : Vec< Vec< usize > > = range( 0, THREADS ).map( pixels_for_thread ).collect();
+	let pixels : Vec< Vec< usize > > = ( 0 .. THREADS ).map( pixels_for_thread ).collect();
 
 	let centres : Vec< Vec< Vec3 > > = pixels.iter().map( | ps | {
 		return pixels_to_centres( ps, top_left, top_right, bottom_right );
@@ -170,17 +168,17 @@ fn main() {
 	let pixels_arc = Arc::new( pixels );
 	let centres_arc = Arc::new( centres );
 
-	for n in range( 0, THREADS ) {
+	for n in 0 .. THREADS {
 		let pixels = pixels_arc.clone();
 		let centres = centres_arc.clone();
 		let world = world_arc.clone();
 
-		Thread::spawn( move || {
-			sampler( eye, pixels[ n ].as_slice(), centres[ n ].as_slice(), &*world, up_pixel, left_pixel );
+		thread::spawn( move || {
+			sampler( eye, &pixels[ n ], &centres[ n ], &*world, up_pixel, left_pixel );
 		} );
 	}
 
-	let ( glfw, window ) = open_window();
+	let ( mut glfw, mut window ) = open_window();
 
 	while !window.should_close() {
 		glfw.poll_events();
@@ -188,7 +186,7 @@ fn main() {
 		unsafe {
 			gl::Begin( gl::POINTS );
 
-			for i in range( 0, image.len() ) {
+			for i in 0 .. image.len() {
 				let x = i % WIDTH;
 				let y = i / WIDTH + 1;
 
@@ -204,7 +202,7 @@ fn main() {
 		}
 
 		window.swap_buffers();
-		sleep( Duration::milliseconds( 250 ) );
+		thread::sleep_ms( 250 );
 	}
 }
 

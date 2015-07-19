@@ -7,14 +7,14 @@ use maths::vec::Vec3;
 use shapes::Shape;
 use lights::Light;
 
-#[ derive( Copy ) ]
+#[ derive( Clone, Copy ) ]
 pub struct AreaLight {
 	color : RGB,
 	area : f64,
 }
 
 impl AreaLight {
-	pub fn new( color : RGB, shape : &Box< Shape > ) -> AreaLight {
+	pub fn new( color : RGB, shape : &Box< Shape + Sync + Send > ) -> AreaLight {
 		return AreaLight {
 			color : color,
 			area : shape.surface_area(),

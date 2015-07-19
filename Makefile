@@ -3,10 +3,12 @@ MAIN = src/main.rs
 
 TARGET = rspt
 
-RFLAGS = -O -W unused-qualifications -W unused-typecasts -W unused-results
-RFLAGS += -L deps/gl-rs/ -L deps/gl-rs/src/gl_common/
+RFLAGS = -O -W unused-qualifications -W unused-results
+RFLAGS += -L deps/gl-rs/ -L deps/gl-rs/gl_common/
 RFLAGS += -L deps/glfw-rs/ -L deps/semver/
-RFLAGS += -L rust-stb-image
+RFLAGS += -L deps/libc/ -L deps/rand/ -L deps/log/ -L deps/bitflags/
+RFLAGS += --extern rand=deps/rand/librand.rlib
+RFLAGS += --cfg feature=\"duration\"
 RFLAGS += -C link-args="-lglfw"
 
 .PHONY: all debug test clean

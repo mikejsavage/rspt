@@ -1,6 +1,5 @@
-use std::num::Float;
-use std::f64::consts::{ PI, PI_2, FRAC_1_PI };
-use std::rand::random;
+use rand;
+use std::f64::consts::{ PI, FRAC_1_PI };
 
 use maths::vec::Vec3;
 use maths::angle::{ Angle, Rad };
@@ -8,10 +7,10 @@ use maths::sampling::disk;
 
 // sample the unit hemisphere uniformly
 pub fn sample() -> Vec3 {
-	let cos_theta = random::< f64 >();
-	let phi = Rad { r : 2.0 * PI * random::< f64 >() };
+	let cos_theta = rand::random();
+	let phi = Rad { r : 2.0 * PI * rand::random::< f64 >() };
 
-	let sin_theta = Float::sqrt( 1.0 - cos_theta * cos_theta );
+	let sin_theta = f64::sqrt( 1.0 - cos_theta * cos_theta );
 	let ( sin_phi, cos_phi ) = phi.sin_cos();
 
 	return Vec3 {
@@ -22,7 +21,7 @@ pub fn sample() -> Vec3 {
 }
 
 pub fn pdf() -> f64 {
-	return 1.0 / PI_2;
+	return 1.0 / ( PI * 2.0 );
 }
 
 // sample the unit hemisphere weighted by cos( theta )

@@ -1,6 +1,6 @@
 #![ allow( dead_code ) ]
 
-use std::num::Float;
+use std::f64;
 use materials::{ Material, BxDF };
 
 pub struct Checkerboard {
@@ -19,8 +19,8 @@ impl Checkerboard {
 
 impl Material for Checkerboard {
 	fn get_bxdf( &self, u : f64, v : f64 ) -> Box< BxDF > {
-		let u10 = Float::floor( u * 10.0 ) as i64;
-		let v10 = Float::floor( v * 10.0 ) as i64;
+		let u10 = f64::floor( u * 10.0 ) as i64;
+		let v10 = f64::floor( v * 10.0 ) as i64;
 		let uc = u * 10.0 - u10 as f64;
 		let vc = v * 10.0 - v10 as f64;
 

@@ -1,5 +1,4 @@
-use std::num::Float;
-use std::rand::random;
+use rand;
 
 pub fn tent( x : f64 ) -> f64 {
 	let twox = 2.0 * x;
@@ -12,5 +11,5 @@ pub fn tent( x : f64 ) -> f64 {
 }
 
 pub fn sample() -> f64 {
-	return tent( random() );
+	return tent( rand::random() );
 }

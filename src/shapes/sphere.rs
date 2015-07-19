@@ -1,4 +1,4 @@
-use std::num::Float;
+use std::f64;
 use std::f64::consts::PI;
 
 use maths::vec::Vec3;
@@ -38,7 +38,7 @@ impl Shape for Sphere {
 			return None;
 		}
 
-		let sqrt_d = Float::sqrt( disc );
+		let sqrt_d = f64::sqrt( disc );
 
 		let tl = b - sqrt_d;
 		let tf = b + sqrt_d;

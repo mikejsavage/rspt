@@ -1,7 +1,6 @@
 use std::ops::{ Add, Mul, Div };
-use std::num::Float;
 
-#[ derive( Clone, Copy, Show ) ]
+#[ derive( Clone, Copy, Debug ) ]
 pub struct RGB( pub f64, pub f64, pub f64 );
 
 #[ allow( dead_code ) ]
